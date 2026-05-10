@@ -1,1 +1,1 @@
-# quant-finance-papers
+# Repository for finance papers
