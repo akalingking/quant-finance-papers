@@ -216,6 +216,7 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
 # Latex
 **/*.aux
 **/*.out
@@ -230,4 +231,7 @@ __marimo__/
 **/*.run.xml
 **/*.glo
 **/*.idx
+**/*.pdf
+!pdf/*.pdf
+
 
