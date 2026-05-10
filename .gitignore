@@ -217,12 +217,17 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 # Latex
-.aux
-.out
-.log
-.toc
-.bbl
-.blg
-.fdb_latexmk
-.fls
-.synctex.gz
+**/*.aux
+**/*.out
+**/*.log
+**/*.toc
+**/*.bbl
+**/*.blg
+**/*.fdb_latexmk
+**/*.fls
+**/*.synctex.gz
+**/*.bcf
+**/*.run.xml
+**/*.glo
+**/*.idx
+

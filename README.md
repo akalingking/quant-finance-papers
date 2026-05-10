@@ -1,1 +1,1 @@
-# Repository for finance papers
+# Template for finance papers
