@@ -1,0 +1,85 @@
+\section*{Order of Convergence}
+\textbf{Definition}. Let $X(t)$ be a process and $X_n$ denote the approximation of the value of $X(T)$ where $T = n\Delta t$. The weak error $e_{\Delta t}^{\text{weak}}$ with respect to some function $f$ is defined as:
+\begin{align*}
+e_{\Delta t}^{\text{weak}} = \sup_{0 \lt t_n \le T} \bigg|\mathbb{E}\big[f(X_n)\big] - \mathbb{E}\big[f(X(t_n))\big] \bigg|
+\end{align*}
+We say that $X_n$ converges weakly to $X(t)$ with order $\rho > 0$ if there exists a constant $C > 0$ independent of  $\Delta t$ such that:
+\begin{align*}
+e_{\Delta t}^{\text{weak}} \le C \Delta t^{\rho}
+\end{align*}
+for all sufficiently small $\Delta t$.
+\\
+\\
+\textbf{Definition}. We define the strong error as $e_{\Delta t}^{\text{strong}}$ as:
+\begin{align*}
+e_{\Delta t}^{\text{strong}} = \sup_{0 \le t_n \le T} \mathbb{E}\left[\left|X_n - X_{t_n}\right|\right]
+\end{align*}
+We can say $X_n$ converges strongly to $X_t$ with the order $\rho > 0$ if there exists a constant $C > 0$ independent of $\Delta t$ such that
+\begin{align*}
+e_{\Delta t}^{\text{strong}} \le C \Delta t^{\rho}
+\end{align*}
+for all sufficiently small $\Delta t$.
+Strong order convergence is usually lower than the weak order convergence since it is more restrictive and demands more accuracy for each timestep while weak convergence is less restrictive where each path can diverge as long as distribution is more controlled.
+\\
+\\
+Euler-Maruyama method converges strongly with the order $\rho=\frac{1}{2}$ or $O(\sqrt{\Delta t})$. This means that error decreases proportional to the square root of the step size, assuming the coefficients of the SDE satisfy Lipschitz {\cite{wiki:lipschitz_continuity}} continuity condition.
+We test this assumption by taking the mean of errors from time steps $\Delta t=2^{-x}$ for values $5 \le x \le 15$ \cite{code}. Taking the log of both sides
+\begin{align*}
+log\left(e_{\Delta t}^{\text{strong}}\right) \le log(C) + \frac{1}{2} log(\Delta t)
+\end{align*}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/euler_maruyama_strong_convergence.png}
+    \caption{Euler-Maruyama Strong Error Convergence}
+    \label{fig:fig_3}
+\end{figure}
+The experimental slope of the error means shown in Fig. \ref{fig:fig_3} is close identical to the sample line having a slope equal to $\frac{1}{2}$. This proves numerically the strong error, $e_{\Delta t}^{\text{Strong}}$, converges in the order of $\rho=\frac{1}{2}$.
+\\
+\\
+We can view weak convergence as the decay in the rate of the "error of the means" while strong convergence is the decay in the rate of the "mean of the errors". Strong convergence implies weak convergence, but the opposite is not necessarily true.
+\\
+\\
+If a numerical scheme converges with the order $\rho$, then decreasing the step size by a factor of $k$ reduces the error by a factor of $k^{\rho}$. For example, the order of $\rho=1$ means that decreasing the step size by a factor of $100$ also decreases the error by a factor of $100$. Meanwhile, an order of $\rho=\frac{1}{2}$ means that decreasing the step size by a factor of $100$ decreases the error by a factor of $10$.
+\\
+\\
+We also assume that Euler-Maruyama approximation converges weakly to the exact solution $X(t)$ at time $T$ if for a class of functions the error in the expected value vanishes as $\Delta t$ approaches 0. As such, this numerical scheme focuses on statistical properties (e.g. mean and variance) of multiple simulation paths rather than a single solution.
+\begin{align*}
+e_{\Delta t}^{\text{Weak}} &:= \big|E[X_n] -E[X(T)]\big| \Rightarrow \; 0 \;as\; \Delta t \Rightarrow 0
+\end{align*}
+The order of convergence $\rho$ is generally equal to $1$ which means the error decreases linearly as $\Delta t$ goes to zero.
+\begin{align*}
+e_{\Delta t}^{\text{Weak}} \le C\Delta t^{\rho}
+\end{align*}
+To test this hypothesis, let us first find $E[X(t)]$, recall that:
+\begin{align*}
+dX_t =  \mu X_tdt + \sigma X_tdB_t
+\end{align*}
+Converting to integral form:
+\begin{align*}
+X_t =  X_0 + \mu \int_0^t X_s ds + \sigma \int_0^t X_s dB_s
+\end{align*}
+We take the expectation of both sides
+\begin{align*}
+\mathbb{E}[X_t] &=  \mathbb{E}[X_0] + \mu \mathbb{E}\left[\int_0^t X_s ds\right] 
++ \sigma \mathbb{E}\left[\int_0^t X_sdB_s\right]\\
+d\mathbb{E}[X_t] &= \mathbb{E}[X_0] + \mu \mathbb{E}[X_t]ds + 0
+\end{align*}
+This implies
+\begin{align*}
+d\mathbb{E}[X_t] = \mu\mathbb{E}[X_t]dt, \quad \mathbb{E}[X_0] = x_0
+\end{align*}
+which solves to a known solution
+\begin{align*}
+d\mathbb{E}[X_t] = X_0e^{ut}
+\end{align*}
+We run the numerical experiment with $M=10^6$ sample paths using Monte-Carlo simulation with values of $\Delta t = 2^{-x}$ such that $5 \lt x \lt 11$
+\begin{align*}
+\big|\mathbb{E}[X_n] - \mathbb{E}[X(T)] \big|, \quad n\Delta t = T
+\end{align*}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/euler_maruyama_weak_convergence.png}
+    \caption{Euler-Maruyama Weak Error Convergence} %
+    \label{fig:fig_4}
+\end{figure}
+The experimental slope of the error means closely matches the weak convergence order of $\rho=1$. The slope of the errors in Fig. \ref{fig:fig_4} is visually identical to the sample line with slope equal to $1$.

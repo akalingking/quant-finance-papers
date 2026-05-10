@@ -1,0 +1,49 @@
+\section*{Stochastic Differential Equation}
+\textbf{Euler-Maruyama} \cite{wiki:euler-maruyama} method is derived by approximating the integral form of the stochastic differential equation over an infinitesimal time interval  $[t_n, t_{n+1}]$. It is the stochastic counterpart of the standard Euler's method for ordinary differential equations. Consider the stochastic process $X(t)$ that satisfies the Ito differential equation
+\begin{equation}\tag{1}\label{eq:sde_1}
+dX_t = f(X_t)dt + g(X_t)dW_t
+\end{equation}
+where $f$ is the drift coefficient and $g$ is the diffusion coefficient, moreover $W_t$ is a Brownian process.
+We express the given differential equation integrally as a single time step $\Delta t= t_{n+1} - t_n$,
+\begin{align*}
+X_{t_{n+1}} = X_{t_n} + \int_{t_n}^{t_{n+1}} f(X_s)ds + \int_{t_n}^{t_{n+1}} g(X_s)dW_s
+\end{align*}
+then discretize the integral equation and assume that the coefficients $f(X_s)$ and $g(X_s)$ are constants over the interval $[t_n, t_{n+1}]$. We evaluate the integral from the left endpoint.
+\begin{align*}
+f(X_s) \approx f(X_{t_n})\\
+g(X_s) \approx g(X_{t_n})
+\end{align*}
+Substitute to the integral equation
+\begin{align*}
+X_{t_n+1} =  X_{t_n} + f(X_{t_n}) \int_{t_n}^{t_{n+1}} ds + g(X_{t_n}) \int_{t_n}^{t_{n+1}} dW_s
+\end{align*}
+Evaluate the deterministic integral $\int_{t_n}^{t_{n+1}} ds$ that simply turns to $\Delta t$. The stochastic integral $\int_{t_n}^{t_{n+1}} dW_s$ represents the increase of the Wiener processes denoted as $\Delta W_n = W_{t_{n+1}} - W_{t_n}$
+
+Substitute the evaluated terms to $\eqref{eq:sde_1}$
+\begin{align*}
+X_{t_{n+1}} =  X_{n} + f(X_n) \Delta_t + g(X_n) \Delta W_n
+\end{align*}
+In practical simulations, $\Delta W_n$ is drawn from a normal distribution with mean $0$ and variance $\Delta t$, often implemented as $\sqrt{\Delta t}\cdot \mathcal{N}(0,1)$
+Therefore, the approximation using Euler-Maruyama method is derived as
+\begin{align*}
+X_{t_{n+1}} =  X_{n} + f(X_n) \Delta_t + g(X_n) \Delta W_n
+\end{align*}
+This formula provides approximation for the depth of the path of the stochastic process by treating drift and diffusion as constants over each timestep.
+On the other hand, we compute the actual price $S_t$ as a geometric Brownian process that changes by a random factor over a time interval $\Delta t$.
+\begin{align*}
+\Delta S = S(t+\Delta t) - S(t)
+\end{align*}
+From the differential form
+\begin{align*}
+dS = \mu Sdt + \sigma S dW_t
+\end{align*}
+We use $S(t+\Delta t)$ below which is solved using Ito's lemma
+\begin{align*}
+S_{t} = S_0 \exp \left[\left(\mu - \frac{1}{2}\sigma^2\right) t + \sigma W_t \right]
+\end{align*}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/euler_maruyama_approximation.png}
+    \caption{Euler-Maruyama Approximation}
+    \label{fig:fig_2}
+\end{figure}

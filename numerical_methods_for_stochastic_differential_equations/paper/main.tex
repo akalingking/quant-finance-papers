@@ -1,0 +1,52 @@
+\documentclass[twocolumn]{article}
+\usepackage{graphicx} 
+\usepackage{amsmath}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{apacite}
+\usepackage{url}
+\usepackage{placeins}
+\usepackage{amsfonts}
+\usepackage[fontsize=9pt]{fontsize}
+\usepackage{abstract}
+\setlength{\absleftindent}{3.0cm}
+\setlength{\absrightindent}{3.0cm}
+
+\geometry{
+    a4paper,
+    total={170mm,257mm},
+    left=10mm,
+    right=10mm,
+    top=15mm,
+    bottom=15mm,
+}
+\selectfont{\small}
+\title{Numerical Methods\\for Stochastic 
+Differential Equations}
+\author {\scriptsize Ariel Kalingking\\
+\scriptsize akalingking@gmail.com
+}
+\date{\scriptsize v1.0.0 April 2026}
+\begin{document}
+\twocolumn[
+    \begin{@twocolumnfalse}
+    \maketitle
+    \begin{abstract}
+    We examine numerical methods to simulate stochastic differential equations. Analytical solutions are presented and followed by numerical simulations.
+    \\
+    \\
+    \textbf{Keywords}: Ito Calculus, Stochastic Calculus, Timeseries, Monte-Carlo, Order-book Micro-structure
+    \end{abstract}
+    \end{@twocolumnfalse}
+]
+%\hfill
+\input{sections/motivation}
+\input{sections/ordinary_differential_equation}
+\input{sections/stochastic_differential_equation}
+\input{sections/order_of_convergence}
+\input{sections/milstein_method}
+%\hfill
+\FloatBarrier
+\bibliographystyle{apacite}
+\bibliography{references}
+\end{document}
