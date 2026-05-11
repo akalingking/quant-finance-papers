@@ -23,5 +23,5 @@ cleanall:
 watch:
 	$(LATEXMK) -pvc $(FLAGS) $(TARGET).tex
 
-.PHONY: all clean distclean watch
+.PHONY: all clean cleanall watch
 
