@@ -1,6 +1,10 @@
 
-all:
+all: manuscript release
+
+
+manuscript:
 	make -C numerical_methods/paper all
+
 
 release: numerical_methods/paper/main.pdf
 	mkdir -p pdf
