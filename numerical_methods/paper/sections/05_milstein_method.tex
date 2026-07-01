@@ -1,8 +1,8 @@
 \section*{Milstein Method}
-The \textbf{Milstein}\cite{wiki:milstein} method improves the Euler-Maruyama approximation by adding the second-order term from the Ito-Taylor expansion. This increases the strong convergence order from $0.5$ to $1.0$.
+The \textbf{Milstein} {\cite{wiki:milstein}} method improves the Euler-Maruyama approximation by adding the second-order term from the Ito-Taylor expansion. This increases the strong convergence order from $0.5$ to $1.0$.
 \\
 \\
-Consider a stochastic differential equation of the form as shown in $\eqref{eq:sde_1}$
+Consider a stochastic differential equation of the form as shown in $\eqref{eq:sde_1}$ 
 The Euler-Maruyama method only keeps the first order terms while Milstein includes an additional term to account for the noise on diffusion signal. Apart from identifying the drift $a(X_t)$ and the diffusion $b(X_t)$, we also need the derivative $b'(X_t)$.
 \begin{align*}
 f(x) = \mu x\\
@@ -65,14 +65,16 @@ X_{t_{n+1}} = X_t + f(X_t)dt + g(X_t)dW_t + \frac{1}{2} g'(X_t)g(X_t)\big[(dW_t)
 \end{align*}
 This term specifically targets the SDE's where the diffusion $g(X_t)$ depends on the state $X_t$. If $g(X_t)$ is constant, the derivative $g'(X_t)$ is zero and Milstein method collapses back to Euler-Maruyama.
 \begin{figure}[h!]
-    \centering    \includegraphics[width=0.5\textwidth]{../figures/milstein_strong_convergence.pdf}
+    \centering    \includegraphics[width=0.5\textwidth]{figures/milstein_strong_convergence.pdf}
+    \vspace{-25pt}
     \caption{Milstein Strong Error Convergence} %
     \label{fig:fig_5}
 \end{figure}
 We compare the performance of the Milstein method in Fig. \ref{fig:fig_5} with Euler-Maruyama in Fig. \ref{fig:fig_3} with the same Monte-Carlo simulation size and we can confirm improvement of the slope of the means of error. The following Fig. \ref{fig:fig_6} illustrates the Milstein weak error order of $1$ which is normally used where overall distribution is more important when assessing the reliability of the numerical method.
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.5\textwidth]{../figures/milstein_weak_convergence.pdf}
+    \includegraphics[width=0.5\textwidth]{figures/milstein_weak_convergence.pdf}
+    \vspace{-25pt}
     \caption{Milstein Weak Error Convergence}
     \label{fig:fig_6}
 \end{figure}

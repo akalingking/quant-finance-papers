@@ -2,13 +2,12 @@
 \usepackage{graphicx} 
 \usepackage{amsmath}
 \usepackage{geometry}
-\usepackage{xr}
-\usepackage{apacite}
 \usepackage{hyperref}
 \usepackage{url}
+\usepackage{apacite}
+\usepackage{apacite}
 \usepackage{placeins}
 \usepackage{amsfonts}
-\usepackage{amsmath}
 \usepackage[fontsize=9pt]{fontsize}
 \usepackage{abstract}
 \setlength{\absleftindent}{3.0cm}
@@ -34,22 +33,24 @@ Differential Equations}
     \begin{@twocolumnfalse}
     \maketitle
     \begin{abstract}
-    We examine numerical methods to simulate stochastic differential equations. Analytical solutions are presented and followed by numerical simulations.
+    We investigate numerical methodologies for the simulation of stochastic differential equations. Closed-form analytical solutions are first derived where available, and these are subsequently employed as reference benchmarks for the corresponding numerical simulations.
     \\
     \\
     \textbf{Keywords}: Ito Calculus, Stochastic Calculus, Timeseries, Monte-Carlo, Order-book Micro-structure
     \end{abstract}
     \end{@twocolumnfalse}
+    \\
+    \hfill
+    \\
 ]
 %\hfill
-\input{sections/motivation}
-\input{sections/ordinary_differential_equation}
-\input{sections/stochastic_differential_equation}
-\input{sections/order_of_convergence}
-\input{sections/milstein_method}
+\input{sections/01_motivation}
+\input{sections/02_ordinary_differential_equation}
+\input{sections/03_stochastic_differential_equation}
+\input{sections/04_order_of_convergence}
+\input{sections/05_milstein_method}
 %\hfill
 \FloatBarrier
 \bibliographystyle{apacite}
 \bibliography{references}
-%\addbibresource{references.bib}
 \end{document}

@@ -22,14 +22,15 @@ for all sufficiently small $\Delta t$.
 Strong order convergence is usually lower than the weak order convergence since it is more restrictive and demands more accuracy for each timestep while weak convergence is less restrictive where each path can diverge as long as distribution is more controlled.
 \\
 \\
-Euler-Maruyama method converges strongly with the order $\rho=\frac{1}{2}$ or $O(\sqrt{\Delta t})$. This means that error decreases proportional to the square root of the step size, assuming the coefficients of the SDE satisfy Lipschitz\cite{wiki:lipschitz_continuity} continuity condition.
-We test this assumption by taking the mean of errors from time steps $\Delta t=2^{-x}$ for values $5 < x < 15$\cite{code}. Taking the log of both sides
+Euler-Maruyama method converges strongly with the order $\rho=\frac{1}{2}$ or $O(\sqrt{\Delta t})$. This means that error decreases proportional to the square root of the step size, assuming the coefficients of the SDE satisfy Lipschitz {\cite{wiki:lipschitz_continuity}} continuity condition.
+We test this assumption by taking the mean of errors from time steps $\Delta t=2^{-x}$ for values $5 \le x \le 15$ \cite{code}. Taking the log of both sides
 \begin{align*}
 log\left(e_{\Delta t}^{\text{strong}}\right) \le log(C) + \frac{1}{2} log(\Delta t)
 \end{align*}
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.5\textwidth]{../figures/euler_maruyama_strong_convergence.pdf}
+    \includegraphics[width=0.5\textwidth]{figures/euler_maruyama_strong_convergence.pdf}
+    \vspace{-25pt}
     \caption{Euler-Maruyama Strong Error Convergence}
     \label{fig:fig_3}
 \end{figure}
@@ -72,13 +73,14 @@ which solves to a known solution
 \begin{align*}
 d\mathbb{E}[X_t] = X_0e^{ut}
 \end{align*}
-We run the numerical experiment with $M=10^6$ sample paths using Monte-Carlo simulation with values of $\Delta t = 2^{-x}$ such that $5 < x < 11$
+We run the numerical experiment with $M=10^6$ sample paths using Monte-Carlo simulation with values of $\Delta t = 2^{-x}$ such that $5 \lt x \lt 11$
 \begin{align*}
 \big|\mathbb{E}[X_n] - \mathbb{E}[X(T)] \big|, \quad n\Delta t = T
 \end{align*}
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.5\textwidth]{../figures/euler_maruyama_weak_convergence.pdf}
+    \includegraphics[width=0.5\textwidth]{figures/euler_maruyama_weak_convergence.pdf}
+    \vspace{-25pt}
     \caption{Euler-Maruyama Weak Error Convergence} %
     \label{fig:fig_4}
 \end{figure}
