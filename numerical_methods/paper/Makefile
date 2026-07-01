@@ -2,7 +2,7 @@ LATEXMK = latexmk
 FLAGS = -pdf -shell-escape -use-make -interaction=nonstopmode -f
 TARGET = main
 BUILD_DIR = ../build
-FIGURES_DIR = ../figures
+FIGURES_DIR = ./figures
 NOTEBOOKS_DIR = ../notebooks
 NOTEBOOKS = $(wildcard $(NOTEBOOKS_DIR)/*.ipynb)
 SCRIPTS = $(NOTEBOOKS:.ipynb=.py)
