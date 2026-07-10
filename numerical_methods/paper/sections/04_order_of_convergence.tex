@@ -23,7 +23,7 @@ Strong order convergence is usually lower than the weak order convergence since 
 \\
 \\
 Euler-Maruyama method converges strongly with the order $\rho=\frac{1}{2}$ or $O(\sqrt{\Delta t})$. This means that error decreases proportional to the square root of the step size, assuming the coefficients of the SDE satisfy Lipschitz {\cite{wiki:lipschitz_continuity}} continuity condition.
-We test this assumption by taking the mean of errors from time steps $\Delta t=2^{-x}$ for values $5 \le x \le 15$ \cite{code}. Taking the log of both sides
+We test this assumption by taking the mean of errors from time steps $\Delta t=2^{-x}$ for values $5 \le x \le 15$. Taking the log of both sides
 \begin{align*}
 log\left(e_{\Delta t}^{\text{strong}}\right) \le log(C) + \frac{1}{2} log(\Delta t)
 \end{align*}

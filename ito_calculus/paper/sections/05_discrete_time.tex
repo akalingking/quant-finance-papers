@@ -1,0 +1,150 @@
+\section{Discrete Time}
+From the simple trading strategy, let $S_t$ be the price of the asset that can be bought or sold at any time $t$ for $t=0,1,\cdots$ where $t=0$ and the initial $S_0$ are known, but future fluctuations $Y_k$ are unknown. We model the price change from time $t$ to $n$ as a random variable $Y_k$, then the price process $S_n$ is a random walk
+\begin{align*}
+S_{n} = \sum_{t=0}^{n-1} Y_k
+\end{align*}
+which is also equivalent to
+\begin{align*}
+Y_{n} = S_{n+1} - S_n
+\end{align*}
+The price changes by an amount of $Y_n$ going to time $n+1$ where the gain or loss is $\alpha_n \cdot Y_n$. We assume that trading in this model is free $(\alpha_{t+1} \ne \alpha_t)$ and that the trader is a price taker where any number of $\alpha_t$ is allowed (i.e., the market has an infinite supply of shares) and that buying and selling shares do not affect the price. The value of the position at the beginning of the period $k$ is $\alpha_k S_k$, which is $\alpha_k$ shares, each of which has the price of $S_k$. After the period $k$, the price has changed to $S_{k+1} = S_k + Y_k$. The total gain up to time $n$ is:
+\begin{align}\label{eq:discrete_ito_integral}
+X_n = \sum_{k=0}^{n-1} \alpha_k (S_{k+1} - S_k)
+\end{align}
+The strategy is non-anticipating if $\alpha_k$ is only determined by $(Y_0, \cdots, Y_{k-1})$ .  In this way, we put the bet on $Y_k$ without knowing what $Y_k$ will be. A strategy starts with an initial bet $\alpha_0$ and must not depend on the returns of $S_k$ at all. After that, the bets are  $\alpha_1(Y_0)$, $\alpha_2(Y_0,Y_1)$ and so on up to $\alpha_k(Y_0,Y_1,\cdots,Y_{k-1})$.
+
+This is decision-making under uncertainty, where we use the probability of the future. This may include an uncertain forecast, at time $k$, $Y_k$ is a random variable. A non-anticipating trading strategy $\alpha_k$ produces a sequence of random variables $X_n$. The questions are as follows
+\begin{enumerate}
+\item  What random variables can be achieved in this way?
+\item Which of the random paths is optimal?
+\end{enumerate}
+A particularly important case is when the price process $S_t$ is a simple random walk. This means that steps $S_k$ satisfy these three properties:
+\begin{align}\label{eq:rand_prop}
+\mathbb{E[}Y_k] = 0, \quad Var(Y_k) = \sigma^2, \quad \text{where all $Y_k$ are i.i.d.}
+\end{align}
+
+Unlike random walks that can fluctuate to infinity, a Doob martingale \cite{wiki:doob-martingale} always converges as $t\rightarrow \infty$ provided that the original $Y$ is integrable. Every Doob martingale is uniformly integrable and will not have extreme explosive behavior.
+
+Any non-anticipating strategy applied to a martingale \cite{wiki:martingale} produces another martingale. One cannot manufacture a positive expected value by strategizing from a non-zero expected return process. We call the sequence $\{S_0, S_1, \cdots, S_k, \cdots, S_n\}$ a discrete path. The time variable $k$ is discrete, but the value of $S_k$ could be continuous or discrete. The process is a martingale if the conditional expectation of the future value is equal to the present value.
+\begin{align*}
+\mathbb{E}\big[S_{n+1} \big| (S_0,\cdots,S_n)=(s_0, \cdots, s_n)\big] = s_n
+\end{align*}
+The martingale property is expressed in terms of increments and decreases in the form of $S_{k+1} = S_k + Z_k$ and $Z_k = S_{k+1} - S_k$ where $Z_k$ is conditional on knowing the value of $S_n$:
+\begin{align}\label{eq:conditional}
+\mathbb{E}\big[Z_n \big|(S_0,\cdots,S_n) = (s_0,\cdots,s_n)\big] = 0
+\end{align}
+The martingale and Markov properties seem similar, but they are not the same. A Markov process does not have to be a martingale. In fact, the expression \eqref{eq:expected} implies that an SDE process is a martingale only if the infinitesimal mean is equal to zero.  Moreover, the distribution of the martingale would depend on $s_n$ only. For example, if the numbers $Y_k$ satisfy the properties of unbiased random walk\eqref{eq:rand_prop}, then the following expression defines a martingale
+\begin{align*}
+S_{n+1}=S_n + S_{n-1}\cdot Y_n + S_{n-2}\cdot(Y_n^2 - \sigma^2)
+\end{align*}
+The last two terms on the right have an expected value of zero, even given the values of $S_{n-1}=s_{n-1}$ and $S_{n-2}=s_{n-2}$. The distribution of the increments may depend on the whole path, but regardless of which path is taken up to time $n$, the increments will have a mean equal to zero. However, note that the mean of the unconditional increments may be zero, although the process is not a martingale. 
+
+The unconditional expected value is $\mathbb{E}[S_{n+1} - S_n]$. This can be zero even though the conditional expected value given by \eqref{eq:conditional} is not all zero. On the other hand, if $S_N$ is a martingale, then the unconditional means are zero due to the stochastic property stating that unconditional mean is the mean of the conditional means.
+
+The Doob theorem for this martingale says that if $S_n$ is a martingale and $X_n$ results from the sequence of $S_k$ by a strategy of the form \eqref{eq:discrete_ito_integral} and if the strategy weights of $\alpha_k$ are non-anticipating, then $X_n$ is a martingale.
+
+As a simple proof, consider a strategy where $\alpha_n$ is a function of all that has come before $\alpha_n=\alpha(s_1, \cdots, s_n, n)$. The increments of the $X$ process is $Z_n=Y_n\alpha(S_1,\cdots,S_n, n)$. Given the $S$ path up to n, the conditional expectation is
+\begin{align*}
+&\mathbb{E}\big[Y_n\cdot\alpha(S_1,\cdots,S_n, n) | S_1=s_1, \cdots, S_n=s_n\big]  = \\
+&\qquad \mathbb{E}\big[ Y_n \big| S_1=s_1,\cdots, S_n=s_n \big] \cdot \alpha(s_1,\cdots,s_n)=0
+\end{align*}
+The constant $\alpha (s_1,\cdots, s_n)$ is just a number, not a random variable and must be outside  the expectation. Active strategies cannot turn a martingale into an expected profit, but they can give a lower risk with the same expected return. The Ito isometry for this situation is 
+\begin{align}\label{eq:ito_isometry}
+\mathbb{E}[X_n^2] = \sigma^2 \sum_{k-0}^{n-1} \mathbb{E}[\alpha_k^2]
+\end{align}
+In this theorem, the sequence $\{X_n\}$ is constructed from the sequence $\{S_n\}$ by any non-anticipating strategy \eqref{eq:discrete_ito_integral}.
+Proof. We write $X_n$ as a double index summation:
+\begin{align*}
+X_n=\sum_{k=1}^n \alpha_kY_k  = \sum_{j=1}^n \alpha_jY_j 
+\end{align*}
+The coefficients $\alpha_k$ could be complicated functions $Y_1, \cdots, Y_{k-1}$.  The proof starts with the trick of using both sums to express the square and then interpreting the product of sums as a sum of products.
+\begin{align*}
+\mathbb{E}[X_n^2] &= \mathbb{E}\left[\left(\sum_{k=1}^n \alpha_kY_k\right)\left(\sum_{j=1}^n \alpha_jY_j\right)\right]\\
+&= \mathbb{E}\left[\sum_{k=1}^n\sum_{j=1}^n \alpha_kY_k\cdot\alpha_jY_j\right] \\
+&= \sum_{k=1}^n\sum_{j=1}^n \mathbb{E}\left[\alpha_kY_k\cdot\alpha_jY_j \right]\\
+&= \sum_{k=1}^n\sum_{j=1}^n \alpha_k \alpha_j\mathbb{E}\left[Y_k
+Y_j \right]\\
+\end{align*}
+Moreover, we need to know the properties of $Y_k$ and $\alpha_k$
+\\
+\\
+\textbf{Case 1}. $Y_k$ are independent and have zero mean and $\alpha_k$ are constants.
+
+if $Y_k$ are independent random variables with $\mathbb{E}[Y_k] = 0$ for all $k$, then:
+
+If $k \ne  j$;  $\;\mathbb{E}[Y_kY_j]= \mathbb{E}[Y_k]\mathbb{E}[Y_j]=0\cdot 0=0$
+
+If $k = j$;  $\;\mathbb{E}[Y_kY_k] = \;\mathbb{E}[Y_k^2] = Var(Y_k) + (E[Y_k])^2 = Var(Y_k) + 0^2=Var(Y_k)$
+
+In this case, the double summation simplifies because all items where $k \ne j$ become zero, we need only to consider the terms where $k=j$:
+\begin{align*}
+\mathbb{E}[X_n^2]=\sum_{k=1}^n\alpha_k\alpha_k \mathbb{E}[Y_kY_k] = \sum_{k=1}^n \alpha_k^2  \mathbb{E}[Y_k^2]
+\end{align*}
+if $Y_k$ are also identically distributed with variance $\sigma_Y^2$ and mean 0, then $\mathbb{E}[Y_k^2]=\sigma_Y^2$ for all k
+\begin{align*}
+\mathbb{E}[X_n^2]=\sum_{k=1}^n\alpha_k^2 \sigma_Y^2 = \sigma_Y^2 \sum_{k=1}^n\alpha_k^2
+\end{align*}
+\\
+\textbf{Case 2}. $Y_k$ are independent and identically distributed with mean $\mu_Y$ and variance $\sigma_y^2$, and $\alpha_k$ are constants.
+if $Y_k$ are independent random variables with $\mathbb{E}[Y_k]=\mu_Y$ and $Var(Y_k)=\sigma_Y^2$, then $E[Y_k^2]=Var(Y_k) + (E[Y_k])^2 = \sigma_Y^2 +\mu_Y^2$.
+For $k \ne j$ ; $\;E[Y_kY_j] = E[Y_k]E[Y_j] = \mu_y \cdot \mu_y = \mu_Y^2$
+so
+\begin{align*}
+\mathbb{E}[X_n^2]=\sum_{k=1}^n\sum_{j=1}^n \alpha_k  \alpha_j \mathbb{E}[Y_kY_j]
+\end{align*}
+We can split the sum into diagonal ($k=j$) and off diagonal ($k\ne j$)  terms.
+
+\begin{align*}
+E[X_n^2] &= \sum_{k=1}^n \alpha_k^2 E[Y_k^2]+ \sum_{k=1}^n\sum_{j=1,j\ne k}^n \alpha_k\alpha_jE[Y_kY_j]\\
+E[X_n^2] &= \alpha_k^2(\sigma_k^2 + \mu_k^2) + \sum_{k=1}^n\sum_{j=1, j\ne k}^k \alpha_k\alpha_j \mu_Y^2
+\end{align*}
+This can be rewritten using the fact $(\sum_{k=1}^n\alpha_k)^2 = \sum_{k=1}^n\alpha_k^2 + \sum_{k=1}^n \sum_{j=1,j \ne k}^n \alpha_k\alpha_j$.  Let $A=\sum_{k=1}\alpha_k$. Then, $A^2=\sum_{k=1}^n \alpha_k^2 + \sum_{j\ne k} \alpha_k \alpha_j\mu_Y^2$.
+\begin{align*}
+E[X_n^2] &=  B(\mu_k^2 + \sigma_k^2) + (A^2-B)\mu_Y^2\\
+E[X_n^2] &= B\sigma_k^2 + B\mu_Y^2 + A^2\mu_Y^2 - B\mu_Y^2\\
+E[X_n^2] &= B\sigma_Y^2 + A^2\mu_Y^2
+\end{align*}
+Without the assumption about $Y_k$ , like independence or mean, the general form solution is
+\begin{align*}
+E[X_n^2]=\sum_{k=1}^n\sum_{j=1}^n \alpha_k\alpha_j E[Y_kY_j]
+\end{align*}
+This formula represents the expected value of $X_n^2$. The name isometry comes from the mathematical transformation that does not change in size. In this case, one of the objects is the sequence for the random variable $\mu$. The size of the sequence is given by the sum of expected squares. The other object is the random variable $X_n$, whose size is measured by $E[X_k^n]$.
+
+Ito's lemma for the discrete-time integral is essentially the stochastic version of the chain rule. For a function $f(W_t)$, we use the standard Taylor expansion on $f(W_{t_{n+1}})$ around $W_{t_n}$.
+\begin{align*}
+f(W_{t_{n+1}} - f(W_{t_n}) &\approx f'(W_{t_n}) \Delta W_{t_n} \\
+&\quad + \frac{1}{2} f"(W_{t_n}) (\Delta W_{t_n})^2 + \cdots
+\end{align*}
+Note that in continuous time, the squared differential $(dW_t)^2$ is deterministically equal to $dt$. In contrast to discrete time, $(dW_t)^2$ is a random variable. While it is expected values is $\Delta t$, it is not perfectly equal to $\Delta t$ at every step. Therefore, the discrete Ito formula carries a localized error
+\begin{align*}
+\Delta f(W_{t_n}) &\approx f'(W_{t_n})\Delta W_{t_n} +  \frac{1}{2}f"(W_{t_n})\Delta t \\
+&\quad + \frac{1}{2} f"(W_{t_n }) [(\Delta W t_n)^2 - \Delta t]
+\end{align*}
+The term $[(\Delta W_{t_n})^2 - \Delta t]$ is a mean zero noise term. As $\Delta t \rightarrow 0$,  the sum of these errors vanishes. This is how we get the clean deterministic $\frac{1}{2} f''(W_{t_n})dt$ term in the continuous calculus.
+
+If a continuous process is described as
+\begin{align*}
+dX_t=\mu(X_t)dt + \sigma(X_t)dW_t
+\end{align*}
+the discrete time simulation scheme is
+\begin{align*}
+X_{t_{n+1}}=X_{t_n} + \mu(X_{t_n}) \Delta t + \sigma(X_{t_n}) \Delta W_{t_n}
+\end{align*}
+
+The continuous increment of $\Delta W_{t_n}$ in the third term is approximated as $\Delta W_k=W_{t_{k=1}} - W_{t_k}$. Moreover, the integral of this continuous increment becomes the summation of $\int X_tdW_t \approx \sum X_{t_k} \Delta W_k$.
+
+The discrete time $\Delta W_k$ is approximated using independent and normally distributed random variables scaled by $\Delta t$
+\begin{align*}
+\Delta W_k \sim \mathbb{N}(0,\Delta t) \text{ or } \Delta W_k = \mathcal{Z}_k\sqrt{\Delta t}
+\end{align*}
+where $\mathcal{Z}_k$ is a standard normal random variable $\mathcal{N}(0,1)$.
+
+In Fig. \ref{fig:ito_calculus_discrete}, we keep the non-anticipating evaluation of $\mu$ and $\sigma$ to maintain the martingale property of the random process. This discretization evaluates the coefficient $S_{t-1}$ at the beginning of the time interval. The random shock is multiplied by $\sqrt{\Delta t}$, not $\Delta t$. This preserves the physical property of Brownian motion, where variance scales linearly with time, $\text{Var}(W_t) = t$.
+ 
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/ito_calculus_discrete.pdf}
+    \vspace{-25pt}
+    \caption{\small Ito Calculus Discrete}
+    \label{fig:ito_calculus_discrete}
+\end{figure}

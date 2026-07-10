@@ -1,0 +1,77 @@
+\section{Continuous Time}
+The Itô integral arises as the continuous-time limit of the discrete trading-gain sum introduced in \eqref{eq:discrete_time_sum_profit}. It captures the dynamics of a setting in which the asset price evolves continuously, while the trading strategy is updated at a comparable (potentially very high) frequency. 
+
+Let $W_{t_{t \ge 0}}$ be a standard Brownian motion, interpreted here as the (idealized) price process of the asset at time $t$. Fix a small time increment $\Delta t > 0$, which represents the temporal resolution at which the price is observed and the trading strategy can be adjusted. We discretize time into intervals of length $\Delta t$ and denote the grid points by $t_k = k \Delta t$, for $k \in \mathbb{N}$. 
+
+At each time $t_k$, the strategy chooses a position size $\alpha_{t_k}$ in the asset, where $\alpha_{t_k}$ may depend on the information available up to time $t_k$. Over the subsequent interval $[t_k, t_{k+1}]$, the price increment is given by $W_{t_{k+1}} - W_{t_k}$. Consequently, the profit or loss realized over this period is
+\begin{align*}
+\alpha_{t_k}(W_{t_{k+1}} - W_{t_k})
+\end{align*}
+The total profit up to $t+\Delta_t$ is
+\begin{align}\label{eq:discrete_time_sum_profit}
+X_t^{\Delta_t} = \sum_{t_k < t} \alpha_{t_k} \big(W_{t_{k+1}} - W_{t_k} \big)
+\end{align}
+The Ito integral with respect to the Brownian motion is the limit as $\Delta_t \rightarrow 0$
+\begin{align}\label{eq:ito_integral}
+X_t=\int_0^t \alpha_s dW_s = \underset{\Delta_t \rightarrow 0}\;{\lim} \sum_{t_k < t} \alpha_{t_k} \big(W_{t_{k+1}}-W_{t_k} \big)
+\end{align}
+The continuous time limit $\Delta_t \rightarrow 0$ is like the continuous time limit of the Riemann integral
+\begin{align*}
+\int_0^t b_s ds = \underset{\Delta_t \rightarrow 0}{\lim}\; \sum_{t_k < t} b_{t_k} \Delta_t
+\end{align*}
+The Riemann integral limit exists as long as $b_t$ is a continuous function of $t$.
+The Ito integral limit \eqref{eq:ito_integral} exists if $\alpha_t$ is continuous and non-anticipating martingale process. This means that there is a function $A(W_{[0,t]}, t)$ so that
+\begin{align*}
+\alpha_t = A(W_{[0,t]}, t)
+\end{align*}
+For example, we could ignore the random part and take $\alpha_t=t^2$. The Ito integral would be a random variable
+\begin{align*}
+X_t=\int_0^t s^2 dW_s
+\end{align*}
+Another example is $\alpha_t=W_t$. This is also non-anticipating since $1+X_t$ depends on $W_s$ for $s \leq t$
+\begin{align*}
+X_t=1 + \int_0^t X_s dW_s
+\end{align*}
+The limit of \eqref{eq:ito_integral} is a sequence of random variable $X_t^{\Delta_t}$ converges to another random variable $X_t$. There are several kinds of convergence for random variables, including convergence in distribution, convergence in probability, and convergence almost surely. Convergence in distribution means that the probability distribution of the random paths $X_t^{\Delta_t}$  converges to the probability distribution of  $X_t$. As a result, simulating the process $X_t^{\Delta_t}$ gives results similar to the theoretical process $X_t$ which we cannot simulate exactly.
+Convergence in probability is the statement that for every $\epsilon > 0$
+\begin{align*}
+Pr\left(\big|X_t^{\Delta_t} - X_t\big| > \epsilon\right) \rightarrow 0 \quad \text{as} \quad \Delta_t \rightarrow 0
+\end{align*}
+This would be natural if we are estimating $X_t$ using $X_t^{\Delta t}$. Almost sure convergence says that with probability $1$ the limit formula of \eqref{eq:ito_integral} is true. Almost sure convergence is the hardest to prove theoretically and most difficult to check in computations. We will need a sequence of simulations with decreasing $\Delta t$. 
+
+For convergence in probability, a simulation of single $\Delta t$ might suffice. The smaller $\Delta t$ the less likely the results will be off by more than $\epsilon$. 
+
+For almost sure convergence, it is unlikely ever to be wrong by more than $\epsilon$  as $\Delta t \rightarrow 0$.  The Doob martingale theorem for Ito integral which states that  if $\alpha_t$ is non-anticipating then $X_t$ is a martingale. The definition of martingale in continuous time is that $X_t$ is a martingale with respect to the Brownian motion path $W$ if
+\begin{align*}
+\mathbb{E}\left[X_{t+s} \big| W_{[0,t]} \right] = X_t
+\end{align*}
+where $W_{[0,t]}$ is the Brownian motion in the interval $[0,t]$ and $X_t$ is a function of $W_{[0,t]}$ under the condition that $X_t$ is an Ito integral with respect to $W$. This definition is a bit different in the discrete time for martingale. where $X_n$ is the current position,  and$ X_{n+1}$ is the next step. In contrast to  continuous time, the next step is referred as all times for $s > t$.
+The proof of this version of Doob's theorem is just from the definitions and limits. The Ito integral is the continuous time limit $\Delta_t \rightarrow 0$ of the discrete time sum described in \eqref{eq:discrete_time_sum_profit} and therefore, $X_t^{\Delta_t}$ is indeed a martingale. The complete mathematical proof is a little involved, because $X_t^{\Delta_t}$ is martingale only in the discrete times $t_k$. These get more finely spaced in the continuous time limit. It is a basic technical theorem in probability that if a discrete time martingale converges in this way, the limit is a continuous time martingale.
+The continuous time Ito isometry for this kind of Ito integral is 
+\begin{align}\label{eq:continuous_time_isometry}
+E[X_t^2]=\int_0^t E[a_s^2] ds
+\end{align}
+We prove this by using the discrete time Ito isometry theorem \eqref{eq:ito_isometry} and taking the continuous time limit. The parameter $\sigma^2$ in discrete time is the variance of the martingale difference.  The martingale difference for $X_t^{\Delta_t}$ is $\Delta W_k= W_{t_{k+1}} - W_{t_k}$ . Then, the variance is
+\begin{align*}
+\sigma^2=Var(\Delta W_k) = E\bigg[ \big(W_{t_k+\Delta t} - W_{t_k} \big)^2 \bigg] = \Delta_t
+\end{align*}
+Therefore, the discrete time in \eqref{eq:ito_isometry}   implies that
+\begin{align*}
+E[(X_{t_n}^{\Delta t})^2] = \Delta t \sum_{k=0}^{n-t} E[\alpha_{t_k}^2]
+\end{align*}
+in the continuous time limit, the right side sum converges to the Riemann integral on the right side of the continuous time \eqref{eq:continuous_time_isometry} . Take note that the approximation in \eqref{eq:discrete_time_sum_profit}  requires $\Delta W_k$ to be in the future of $t_k$.
+
+In Fig. \eqref{fig:ito_calculus_continuous}, the continuous time integral $\int S_t dW_t$ represents the infinitesimal increment of the Brownian process. Given the SDE, $dS_t=\mu S_tdt + \sigma S_tdW_t$, we use Ito's lemma, which is derived from the second-order Taylor expansion and gives:
+
+\begin{equation}\label{eq:sde_solved_w_itos_lemma}
+\sdewitosolution
+\end{equation}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/ito_calculus_continuous.pdf}
+    \vspace{-25pt}
+    \caption{\small Ito Calculus Continuous}
+    \label{fig:ito_calculus_continuous}
+\end{figure}
+
