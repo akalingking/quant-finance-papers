@@ -1,0 +1,199 @@
+\section{Ito's Lemma}
+Consider a stochastic process $f(X_t, t)$, we derive Ito's lemma \cite{wiki:itos-lemma} using the properties of the Ito integral and Taylor series expansion. The $X_t$ process is defined by the following SDE:
+\begin{align} \label{eq:stoch_diff_eq}
+dX_t = \mu(X_t,t)dt + \sigma(X_t,t)dW_t
+\end{align}
+We treat the drift and diffusion coefficients as constants $\mu$ and $\sigma$ respectively. We are interested in the behavior of a certain function $Y_t=f(X_t, t)$. In practical application, we would want to know how returns $(Y_t)$ of a trading strategy will evolve given a price function $(X_t)$ as a stochastic process parameter.
+
+Moreover, we define $\Delta Y$ over a small time interval from t to $(t+\Delta t)$
+\begin{align*}
+\Delta Y = Y_{t+\Delta t} - Y_t = f(X_{t+\Delta t}, t+\Delta t) - f(X_t, t)
+\end{align*}
+We use the Taylor series expansion of $f(\cdots)$ around the point $(X_t, t)$.  For a function of two variables, the Taylor expansion to the second order and ignoring the higher order derivatives
+\begin{align*}
+f(X_{t+\Delta t}, t+\Delta t) \approx f(X_t,t) + \frac{\partial f}{\partial x}(X_t, t) \Delta X + \\\frac{\partial f}{\partial t} (X_t,t) \Delta t + \frac{\partial^2f}{\partial x^2}(X_t,t)(\Delta X)^2 + \cdots
+\end{align*}
+Therefore,
+\begin{align*}
+\Delta Y \approx \frac{\partial f}{\partial x}\Delta X + \frac{\partial f}{\partial t}\Delta t + \frac{\partial^2f}{\partial x^2}(\Delta X)^2
+\end{align*}
+We substitute the differential of the SDE for $\Delta X$ : $dX_t=\mu dt + \sigma dW_t$ . For a small interval, $\Delta X =\approx \mu \Delta t + \sigma \Delta W$
+
+Expanding $(\Delta X)^2$:
+\begin{align*}
+(\Delta X)^2 &\approx (\mu \Delta t + \sigma \Delta W)^2\\
+(\Delta X)^2 &\approx (\mu \Delta t)^2 + 2 (\mu \Delta t)(\sigma \Delta W) + (\sigma \Delta W)^2\\
+(\Delta X)^2 &\approx \mu^2(\Delta t)^2 + 2\mu\sigma \Delta t \Delta W + \sigma^2 (\Delta W)^2
+\end{align*}
+We need to determine the behavior of $(\Delta t)^2$, $\Delta t \Delta W$, and $(\Delta W)^2$ as $\Delta t \rightarrow 0$.
+
+From the Brownian process incrementing from  $t$ to $(t+1)$ with $\Delta t$ infinitesimally small.
+\begin{itemize}
+\item $\Delta W \sim N(0, \Delta t)$, which implies $E[\Delta W]=0$ and $E[(\Delta W)^2]= \Delta t$
+\item  As $\Delta t \rightarrow 0$;
+\begin{enumerate}
+\item[a.] $(\Delta t)^2$ is of higher order than $\Delta t$
+\item[b.] $\Delta t \Delta W$ is of higher order than $\Delta t$
+\item[c.] $(\Delta W)^2$ behaves like $\Delta t$
+\end{enumerate}
+\end{itemize}
+When taking the limit $\Delta t \rightarrow 0$,  the terms $(\Delta t)^2$ and $\Delta t \Delta W$ vanish faster then $\Delta t$ and $(\Delta W)^2$. We can effectively say
+\begin{align*}
+(\Delta X)^2 \approx \sigma^2(\Delta W)^2
+\end{align*}
+For the limit $(\Delta W)^2 = \Delta t$, substituting these back to the Taylor expansion
+\begin{align*}
+\Delta Y \approx \frac{\partial f}{\partial x}(\mu \Delta t + \sigma \Delta W) dt + \frac{\partial f}{\partial t} \Delta t+ \frac{1}{2}\frac{\partial^2 f}{\partial x^2} \sigma^2 (\partial W)^2
+\end{align*}
+We take the limits as $\Delta t \rightarrow 0$ and $dY_t$ as the limit of $\Delta t$.
+
+The term $\frac{\partial f}{\partial x} \sigma\Delta W$ corresponds to the Ito integral part of $dY_t$.
+
+The terms multiplied by $\Delta t$ will form the drift part of $dY_t$.
+
+When we use the property that $(dW_t)^2$ contributes as $\Delta t$ term, the expression becomes
+\begin{align*}
+\Delta Y \approx \left(\frac{\partial f}{\partial x} \mu + \frac{\partial f}{\partial t} + \frac{1}{2}\frac{\partial^2f}{\partial x^2} \sigma^2 \right)\Delta t + \left (\frac{\partial f}{\partial x}\sigma \right)\Delta W
+\end{align*}
+Converting the above expression to differential form 
+\begin{equation}
+\begin{align}
+dY_t &\approx \left(
+    \frac{\partial f}{\partial x} \mu(X_t,t) 
+    + \frac{\partial f}{\partial t}  (X_t,t)
+    + \frac{1}{2}\frac{\partial^2f}{\partial x^2} (X_t,t) \sigma^2 (X_t,t)
+    \right)dt\\ 
+    &\quad + \left (
+       \frac{\partial f}{\partial x}(X_t,t)\sigma (X_t,t)
+    \right)d W
+\end{align}\label{eq:itos_lemma}
+\end{equation}
+The above expression is Ito's lemma and highlights how $\frac{1}{2}\sigma^2\frac{\partial^2 f}{\partial x^2}$ arises from the non-zero quadratic variation of the Brownian process captured by $(\Delta W)^2 \approx \Delta t$ property when applying the Ito integral.
+
+\subsubsection*{Example 1}
+
+Consider a stochastic process
+\begin{align*}
+f(X_t, t) = tX_t^2
+\end{align*}
+We derive the Ito's lemma using the properties of the Ito integral and Taylor series expansion. 
+
+The $X_t$ process is defined by the following SDE:
+\begin{align*}
+dX_t = \mu(X_t,t)dt + \sigma(X_t,t)dW_t
+\end{align*}
+where $\mu &= 0.05x$ and $\sigma &= 0.2x$.
+
+We treat the drift and diffusion coefficients as constants $\mu$ and $\sigma$ respectively. We are interested in the behavior of a certain function $Y_t=f(X_t, t)$. 
+
+In practical application, we would want to know how returns $(Y_t)$ of a trading strategy will evolve given a price function $(X_t)$ as a stochastic process parameter.
+
+We refer to the second order Taylor series expansion
+\begin{align*}
+dY_t &\approx \frac{\partial f(X_t,t)}{\partial t} dt
+    + \frac{\partial f(X_t,t)}{\partial x} dX_t
+    + \frac{1}{2} \sigma^2 \frac{\partial^2f(X_t,t)}{\partial x^2} (dW_t)^2
+\end{align*}
+
+Solve for the PDEs:
+\begin{align*}
+\frac{\partial}{\partial t} f(X_t,t) &= X^2\\
+\frac{\partial}{\partial x} f(X_t,t) &= 2tX\\
+\frac{\partial^2}{\partial x^2} f(X_t,t) &= 2t\\
+\end{align*}
+
+Substituting $dX_t = \big(0.05X\big)\cdot dt + \big(0.2X\big)\cdot dW_t$, and the PDEs into $dY_t$
+\begin{align*}
+dY_t &\approx x^2 dt
+    + 2tX \cdot \big( (0.05X) dt + (0.2X) dW_t \big) \\
+    &\qquad + \frac{1}{2}(0.2X)^2\cdot (2t)\cdot (dW_t)^2
+\end{align*}
+
+Gives us the returns of the trading strategy as:
+\begin{align*}
+dY_t &\approx \left(0.14tX^2 + X^2 \right)dt + \left(0.4tX^2 \right) dW_t
+\end{align*}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/itos_lemma_1.pdf}
+    \vspace{-25pt}
+    \caption{\small Approximation of $f(X_t)=tX_t^2$}
+    \label{fig:itos_lemma_1}
+\end{figure}
+%\FloatBarrier
+
+Fig. \eqref{fig:itos_lemma_1} shows the graph of the underlying asset price and the returns of the strategy trading strategy.
+\\
+\subsubsection*{Example 2}
+Consider the SDE for asset price $S_t$:
+\begin{align*}
+dS_t = \mu S_t dt + \sigma S_t dW_t
+\end{align*}
+We want to find the SDE for the log price, $Y_t$, expressed as 
+\begin{align*}
+f(S_t) = \ln(S_t)
+\end{align*}
+Ito's lemma states:
+\begin{align*}
+df(S_t) = \frac{\partial f}{\partial S} dS_t + \frac{1}{2} \frac{\partial^2 f}{\partial S^2} (dS_t)^2
+\end{align*}
+
+Solve the PDE's
+\begin{align*}
+\frac{\partial f}{\partial S} &= \frac{1}{S_t}\\
+\frac{\partial^2 f}{\partial S^2} &= -\frac{1}{S_t^2}
+\end{align*}
+
+Solve for $(dS_t)^2$ term of Ito's lemma
+\begin{align*}
+(dS_t)^2 = (\mu S_t dt + \sigma S_t dW_t)^2
+\end{align*}
+
+Expanding this out algebraically
+\begin{align*}
+(dS_t)^2 = \mu^2 S_t^2 (dt)^2 + 2 \mu \sigma S_t^2 (dt)(dW_t) + \sigma^2 S_t^2 (dW_t)^2
+\end{align*}
+
+Now we apply the formal multiplication rules of stochastic calculus as $dt \to 0$:
+\begin{itemize}
+\item $(dt)^2 \to 0$ (it shrinks to zero much faster than $dt$)
+\item $(dt)(dW_t) \to 0$
+\item $(dW_t)^2 \to dt$ (the fundamental property of variance in Brownian motion)
+\end{itemize}
+
+Applying these rules makes the first two terms vanish entirely
+\begin{align*}
+(dS_t)^2 = \sigma^2 S_t^2 dt
+\end{align*}
+
+Substitute the PDEs and the squared identity into the general Ito's lemma equation:
+\begin{align*}
+df(S_t) = \left( \frac{1}{S_t} \right) dS_t + \frac{1}{2} \left( -\frac{1}{S_t^2} \right) (\sigma^2 S_t^2 dt)
+\end{align*}
+
+Substitute the actual definition of $dS_t$ ($\mu S_t dt + \sigma S_t dW_t$) into the first term:
+\begin{align*}
+df(S_t) = \frac{1}{S_t} \left( \mu S_t dt + \sigma S_t dW_t \right) - \frac{1}{2}\sigma^2 dt
+\end{align*}
+
+Distribute the $\frac{1}{S_t}$ across the parentheses:
+\begin{align*}
+df(S_t) = \mu dt + \sigma dW_t - \frac{1}{2}\sigma^2 dt
+\end{align*}
+
+Finally, group the common $dt$ terms together to get the final SDE for $Y_t = \ln(S_t)$:
+\begin{align*}
+dY_t = \left( \mu - \frac{1}{2}\sigma^2 \right) dt + \sigma dW_t
+\end{align*}
+
+We simulate both the underlying asset price $S_t$ and its analytical log-transformed $Y_t$ as shown in Fig.\eqref{fig:itos_lemma_2}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/itos_lemma_2.pdf}
+    \vspace{-25pt}
+    \caption{\small Approximation of $Y(S_t)=ln(S_t)$}
+    \label{fig:itos_lemma_2}
+\end{figure}
+%\FloatBarrier

@@ -1,0 +1,72 @@
+\section{Introduction}
+The Itô integral and Itô’s lemma are fundamental instruments in stochastic calculus, playing roles analogous to the Riemann integral and the chain rule in classical calculus. In deterministic analysis, integration and the chain rule are central to the solution of ordinary differential equations (ODEs). Similarly, in the stochastic setting, the Itô integral and Itô’s lemma provide the corresponding framework solving stochastic differential equations (SDEs).
+
+The Itô integral defines integration with respect to a stochastic process, most commonly a Brownian motion (Wiener process). The classical Riemann–Stieltjes integral is generally not applicable in this context because Brownian paths are almost surely nowhere differentiable and exhibit fractal-like behavior, with unbounded variation on every time interval. As a consequence, the standard Riemann–Stieltjes construction fails, and a probabilistic (mean-square) limiting procedure is required to define the integral.
+
+Itô’s lemma serves as the stochastic analogue of the chain rule, modified to account for the randomness and the non-vanishing quadratic variation of Brownian motion. Specifically, the lemma incorporates an additional second-order term proportional to the quadratic variation of the driving process. This correction term reflects the fact that, although the quadratic variation of Brownian motion over a time interval is non-zero (and in fact equal to the length of the interval almost surely), its expectation is deterministic and scales linearly with the length of the time interval. Together, the Itô integral and Itô’s lemma form the core calculus used to analyse and solve SDEs.
+\\\\
+Consider the ODE
+\begin{align*}
+dX_t = a(X_t)dt
+\end{align*}
+
+Then, the integral form is
+\begin{align*}
+X_t - X_0 = \int_0^t a(X_s)ds
+\end{align*}
+
+The chain rule is represented as a function of the solution $f(X_t)$, which gives
+\begin{align*}
+df(X_t)&=f'(X_t)dX_t\\
+&=f'(X_t)a(X_t)dt
+\end{align*}
+
+The integral form of the differential relation is
+\begin{align*}
+f(X_t)=f(X_0) + \int_0^t f'(X_s)a(X_s)dsf
+\end{align*}
+
+The expression using differentials and the chain rule is equivalent to the formula involving integrals, in which all the terms are defined. The rigorous integral form does not replace the differential formula. The differential equation shows how the dynamics evolve. The integral form provides confidence that the informal reasoning makes sense.
+
+The Brownian motion is denoted by $W_t$ and the standard Brownian motion is when $W_0=0$, $E[W_t]=0$, and the variance is $Var(W_t)=t$
+
+The Ito integral is a stochastic process
+\begin{align*}
+X_t=\int_0^t a_s dW_s
+\end{align*}
+This is equivalent to the indefinite integral in ODE. The integrand is another random process $a_s$ that must be non-anticipating, meaning only the most current information is used.
+
+The SDE is a dynamic model of the form
+\begin{align}\label{eq:sde_1}
+dX_t=a(X_t)dt + b(X_t)dW_t
+\end{align}
+This equation can be interpreted in two ways:
+\begin{enumerate}
+\item[A.] $X_t$ is a stochastic process with infinitesimal mean and variance
+\begin{align}\label{eq:expected}
+\mathbb{E}\big[dX_t|X_{[0,t]}\big] &= 0
+\end{align}
+\begin{align}\label{eq:variance}
+Var\big[dX_t|X_{[0,t]}\big] &= b^2(X_t)dt
+\end{align}
+This expression follows the informal SDE in \eqref{eq:sde_1} using the basic properties of the Brownian motion
+\begin{align*}
+\mathbb{E}[dW_t] &= 0\\
+Var[dW_t] &= dt
+\end{align*}
+From the defining properties of Brownian motion, the increment over a small time step satisfies \(\Delta W_t \sim \mathcal{N}(0,\Delta t)\). For a normally distributed random variable \(X \sim \mathcal{N}(\mu,\sigma^2)\), the expectation is \(\mathbb{E}[X] = \mu\); in the present case, this implies that the mean of \(\Delta W_t\) is zero. Passing to the infinitesimal limit \(\Delta t \to dt\), we obtain
+\[
+\mathbb{E}[dW_t] = 0.
+\]
+Furthermore, assuming the initial condition \(W_0 = 0\), for any \(t > s\) the increment \(W_t - W_s\) is independent of the past and, by the stationary and Gaussian increment properties of Brownian motion, it follows that
+\begin{align*}
+W_t - W_s \sim \mathcal{N}(0, t-s)\\
+Var[dW_t] = dt \qquad
+\end{align*}
+
+\item[B.] Take the integral form of \eqref{eq:sde_1}
+\begin{align*}
+X_T-X_t = \int_t^T \alpha(X_s)ds + \int_t^T \sigma(X_s)dW_s
+\end{align*}
+where the first term is an ordinary Riemann integral and the other is a Brownian process. 
+\end{enumerate}

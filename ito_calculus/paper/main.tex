@@ -1,0 +1,66 @@
+\documentclass[twocolumn]{article}
+\usepackage{graphicx} 
+\usepackage{amsmath}
+\usepackage{geometry}
+\usepackage{xr}
+\usepackage{url, apacite}
+\usepackage{placeins}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage[fontsize=9pt]{fontsize}
+\usepackage{abstract}
+\usepackage{hyperref}
+\documentclass{article}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage[compact]{titlesec}
+\newtheorem{definition}{Definition}[section]
+\setlength{\absleftindent}{2.5cm}
+\setlength{\absrightindent}{2.5cm}
+\selectfont{\small}
+\geometry{
+    a4paper,
+    total={170mm,257mm},
+    left=10mm,
+    right=10mm,
+    top=15mm,
+    bottom=15mm,
+}
+
+% Reduces the space between text and floats (figures/tables)
+\setlength{\intextsep}{5pt plus 2pt minus 2pt} 
+% Reduces the space at the top/bottom of a page if the figure is at the top/bottom
+\setlength{\textfloatsep}{5pt plus 2pt minus 2pt}
+
+% Begin actual document
+\title{Ito Calculus}
+\author{\small Ariel Kalingking\\ \small 
+akalingking@gmail.com}
+\date{\small v1.0.0 May 2026}
+
+\begin{document}
+\twocolumn [
+    \begin{@twocolumnfalse}
+    \maketitle
+    \begin{abstract}
+    We aim to deconstruct the formulation of Itô’s lemma and analyze its application to the approximation of stochastic processes.
+    \\\\
+    \textbf{Keywords}: Ito Calculus, Stochastic Calculus, Timeseries, Order-book, Market Making
+    \\\\
+    \end{abstract}
+    \end{@twocolumnfalse}  
+ ]
+\input{macros.tex} 
+\input{sections/01_motivation}
+\input{sections/02_introduction}
+\input{sections/03_ito_integral}
+\input{sections/04_itos_lemma}
+\input{sections/05_discrete_time}
+\input{sections/06_continuous_time}
+\input{sections/07_conclusion}
+\hfill
+\FloatBarrier
+\bibliographystyle{apacite}
+\bibliography{references}
+\input{sections/99_appendix}
+\end{document}
