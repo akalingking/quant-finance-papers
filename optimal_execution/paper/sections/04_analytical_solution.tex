@@ -1,0 +1,212 @@
+\section*{Analytical Solution}
+We use the closed form solution from \cite{online:orderbook-optimal-liquidation} to compare with the numerical approximation simulated earlier.
+
+We define a terminal condition of the value function at the end of the time horizon and the boundary conditions to determine how the value function behaves in certain states.
+
+\subsection*{Boundary Conditions}
+\begin{itemize}
+\item \textbf{Terminal Condition}
+Assume that we are trading over a finite time horizon. At the terminal time, the cost is zero. In other words, the value function is zero for all possible inventory levels $q$.
+$$V(q, T) = 0$$
+
+\item \textbf{Structure of $V(q,t)$}
+We assume that the value function has a specific functional form that depends on the state variable and time. A typical guess is a quadratic $q$ and some function of $t$. As such, we use the ansatz form
+$$V(q, t) = -A(t) q^2$$
+\end{itemize}
+
+The negative sign is a common convention in cost minimization problems to ensure that $V(q,t)$ is convex. Here, $A(t)$ is a function of time that we need to determine.
+
+This specific ansatz fits the HJB problem because the underlying system is linear-quadratic (LQ)
+\begin{itemize}
+\item The system dynamics are linear: $dq_t = -\nu_t dt$.
+\item The running and terminal costs are quadratic: $\gamma \nu^2$, $\phi q^2$, and $\alpha q^2$
+\end{itemize}
+
+Substituting $V(t,q) = A(t)q^2$ as the ansatz into the HJB equation, the inventory variable $q^{2}$ factors out completely in the equation. This simplifies the complex, multi-variable PDE into a single-variable ODE) for $A(t)$, proving the guess is mathematically correct.
+
+The quadratic ansatz will fail if we introduce constraints that will break the Linear-Quadratic harmony of the problem
+
+\begin{itemize}
+\item \textbf{No-Short-Selling Constraints}
+Restricting inventory to never drop below zero $q_t \ge 0$ introduces a hard boundary condition.
+\item \textbf{Non-Quadratic Market Impact}
+If walking the order book scales power-law style (e.g., impact costs proportional to $\nu _{t}^{1.5}$ instead of $\nu _{t}^{2}$, the HJB equation cannot be separated, and will require numerical grid solvers instead of a Riccati equation.
+\end{itemize}
+
+\subsection*{Solve for the Value Function}
+Now we plug the ansatz into the HJB equation and use the terminal condition to find $A(t)$.
+
+First, determine the partial derivatives of $V(q, t) = -A(t) q^2$:
+\begin{itemize}
+\item Derivative with respect to time:
+$$\frac{\partial V}{\partial t} = \frac{\partial}{\partial t}\bigg(-A(t) q^2 \bigg) = -A'(t) q^2$$
+\item Derivative with respect to inventory:
+$$\frac{\partial V}{\partial q} = \frac{\partial}{\partial q}\bigg(-A(t) q^2 \bigg) = -2 A(t) q$$
+\end{itemize}
+
+Substitute these into the HJB equation in \eqref{eq:derived_hjb}:
+
+$$-A'(t) q^2 = \frac{1}{4 \eta} \bigg(-2 A(t) q\bigg)^2 - \gamma \sigma^2 q^2$$
+
+Let’s simplify the term with $(\frac{\partial V}{\partial q})^2$:
+
+$$\frac{1}{4 \eta} \bigg(-2 A(t) q \bigg)^2 = \frac{1}{4 \eta} \bigg(4 A(t)^2 q^2 \bigg) = \frac{A(t)^2}{\eta} q^2$$
+
+Substitute this into the equation:
+
+$$-A'(t) q^2 = \frac{A(t)^2}{\eta} q^2 - \gamma \sigma^2 q^2$$
+
+Since this equation must hold for all $q$, we can divide both sides by $q^2$ (assuming $q \neq 0$):
+
+$$-A'(t) = \frac{A(t)^2}{\eta} - \gamma \sigma^2$$
+
+Rearranging this equation to get a standard form for a first-order ordinary differential equation:
+
+$$A'(t) = \gamma \sigma^2 - \frac{A(t)^2}{\eta}$$
+
+Now, let’s apply the terminal condition $V(q, T) = 0$.
+
+Since $V(q, T) = -A(T) q^2$, for this to be zero for all $q$, we must have $A(T) = 0$.
+
+So, we need to solve the ODE:
+
+$$\frac{dA}{dt} = \gamma \sigma^2 - \frac{A^2}{\eta}$$
+
+with the boundary condition $A(T) = 0$. This is a Riccati equation \cite{wiki:ricatti-equation} and to solve we can rearrange it
+
+$$\frac{dA}{dt} = \frac{\gamma \sigma^2 \eta - A^2}{\eta}$$
+
+$$\frac{\eta}{\gamma \sigma^2 \eta - A^2} dA = dt$$
+
+We can integrate both sides. Let’s integrate from $t$ to $T$ on the left and from $A(t)$ to $A(T)=0$ on the right:
+
+$$\int_{A(t)}^{A(T)} \frac{\eta}{\gamma \sigma^2 \eta - A^2} dA = \int_{t}^{T} dt$$
+
+The right side is straightforward:
+
+$$\int_{t}^{T} dt = T - t$$
+
+For the left side, we use the integral of $\frac{1}{a^2 - x^2}$, which is $\frac{1}{2a} \ln\left|\frac{a+x}{a-x}\right|$. In our case, $a^2 = \gamma \sigma^2 \eta$, so $a = \sqrt{\gamma \sigma^2 \eta}$. Let $C = \gamma \sigma^2 \eta$. The integral is $\int \frac{\eta}{C - A^2} dA$.
+
+$$\int \frac{\eta}{C - A^2} dA = \eta \int \frac{1}{C - A^2} dA = \eta \left( \frac{1}{2\sqrt{C}} \ln\left|\frac{\sqrt{C}+A}{\sqrt{C}-A}\right| \right)$$
+
+$$= \frac{\eta}{2\sqrt{\gamma \sigma^2 \eta}} \ln\left|\frac{\sqrt{\gamma \sigma^2 \eta}+A}{\sqrt{\gamma \sigma^2 \eta}-A}\right|$$
+
+$$= \frac{\sqrt{\eta}}{2\sqrt{\gamma \sigma^2}} \ln\left|\frac{\sqrt{\gamma \sigma^2 \eta}+A}{\sqrt{\gamma \sigma^2 \eta}-A}\right|$$
+
+$$= \frac{\sqrt{\eta}}{2\sigma\sqrt{\gamma}} \ln\left|\frac{\sigma\sqrt{\gamma \eta}+A}{\sigma\sqrt{\gamma \eta}-A}\right|$$
+
+Applying the limits of integration:
+
+$$\left[ \frac{\eta}{2\sqrt{\gamma \sigma^2 \eta}} \ln\left|\frac{\sqrt{\gamma \sigma^2 \eta}+A}{\sqrt{\gamma \sigma^2 \eta}-A}\right| \right]_{A(t)}^{0} = T - t$$
+
+Substitute 
+$A(T)=0$:
+
+$$\frac{\eta}{2\sqrt{\gamma \sigma^2 \eta}} \ln\left|\frac{\sqrt{\gamma \sigma^2 \eta}+0}{\sqrt{\gamma \sigma^2 \eta}-0}\right| - \frac{\eta}{2\sqrt{\gamma \sigma^2 \eta}} \ln\left|\frac{\sqrt{\gamma \sigma^2 \eta}+A(t)}{\sqrt{\gamma \sigma^2 \eta}-A(t)}\right| = T - t$$
+
+$$\frac{\eta}{2\sqrt{\gamma \sigma^2 \eta}} \ln(1) - \frac{\eta}{2\sqrt{\gamma \sigma^2 \eta}} \ln\left|\frac{\sqrt{\gamma \sigma^2 \eta}+A(t)}{\sqrt{\gamma \sigma^2 \eta}-A(t)}\right| = T - t$$
+
+$$0 - \frac{\eta}{2\sqrt{\gamma \sigma^2 \eta}} \ln\left|\frac{\sqrt{\gamma \sigma^2 \eta}+A(t)}{\sqrt{\gamma \sigma^2 \eta}-A(t)}\right| = T - t$$
+Let 
+$K = \sqrt{\gamma \sigma^2 \eta}$.
+
+$$-\frac{\eta}{2K} \ln\left|\frac{K+A(t)}{K-A(t)}\right| = T - t$$
+
+$$\ln\left|\frac{K+A(t)}{K-A(t)}\right| = -\frac{2K(T-t)}{\eta}$$
+
+Exponentiate both sides:
+
+$$\left|\frac{K+A(t)}{K-A(t)}\right| = e^{-\frac{2K(T-t)}{\eta}}$$
+
+Since we expect $A(t)$ to be positive for $t < T$ (as $V$ is negative and $q^2$ is positive, and we are minimizing cost), and $K>0$, the term $K+A(t)$ will be positive and $K-A(t)$ will be positive (because 
+$A(T)=0$ and $A'(t)>0$ if $A<\sqrt{\eta\gamma\sigma^2}$), so we can remove the absolute value.
+
+$$\frac{K+A(t)}{K-A(t)} = e^{-\frac{2K(T-t)}{\eta}}$$
+
+Let $E = e^{-\frac{2K(T-t)}{\eta}}$.
+
+$$K+A(t) = E(K-A(t))$$
+
+$$K+A(t) = EK - EA(t)$$
+
+$$A(t) + EA(t) = EK - K$$
+
+$$A(t)(1+E) = K(E-1)$$
+
+$$A(t) = K \frac{E-1}{E+1}$$
+
+Substitute $K = \sqrt{\gamma \sigma^2 \eta}$ and $E = e^{-\frac{2\sqrt{\gamma \sigma^2 \eta}(T-t)}{\eta}}$:
+
+$$A(t) = \sqrt{\gamma \sigma^2 \eta} \frac{e^{-\frac{2\sqrt{\gamma \sigma^2 \eta}(T-t)}{\eta}} - 1}{e^{-\frac{2\sqrt{\gamma \sigma^2 \eta}(T-t)}{\eta}} + 1}$$
+
+We can simplify this expression using the hyperbolic tangent function, $\tanh(x) = \frac{e^x - e^{-x}}{e^x + e^{-x}}$.
+
+Let $x = \frac{\sqrt{\gamma \sigma^2 \eta}(T-t)}{\eta}$. Then $E = e^{-2x}$.
+
+$$A(t) = K \frac{e^{-2x} - 1}{e^{-2x} + 1} = K \frac{-(1 - e^{-2x})}{1 + e^{-2x}}$$
+
+Multiply numerator and denominator by $e^x$:
+
+$$A(t) = K \frac{-(e^x - e^{-x})}{e^x + e^{-x}} = -K \tanh(x)$$
+
+$$A(t) = -\sqrt{\gamma \sigma^2 \eta} \tanh\left(\frac{\sqrt{\gamma \sigma^2 \eta}(T-t)}{\eta}\right)$$
+
+Recall that $V(q, t) = -A(t) q^2$. Therefore, the solution for the value function is
+
+$$V(q, t) = - \left( -\sqrt{\gamma \sigma^2 \eta} \tanh\left(\frac{\sqrt{\gamma \sigma^2 \eta}(T-t)}{\eta}\right) \right) q^2$$
+
+\begin{equation}\label{eq:value_function_analytical}\tag{4}
+V(q, t) = \sqrt{\gamma \sigma^2 \eta} \tanh\left(\frac{\sqrt{\gamma \sigma^2 \eta}(T-t)}{\eta}\right) q^2
+\end{equation}
+
+Let’s check the terminal condition: As $t \to T$, $(T-t) \to 0$, so $\tanh(0) = 0$, which makes $V(q, T) = 0$. This matches our condition. The solution $V(q,t)$ represents the minimum expected cost from time $t$ to time $T$, given the current inventory level $q$. The optimal trading strategy $v^*$ can also be found using $v^* = \frac{1}{2\eta} \frac{\partial V}{\partial q}$.
+
+$$\frac{\partial V}{\partial q} = 2q \sqrt{\gamma \sigma^2 \eta} \tanh\left(\frac{\sqrt{\gamma \sigma^2 \eta}(T-t)}{\eta}\right)$$
+
+$$v^*(q,t) = \frac{1}{2\eta} \left( 2q \sqrt{\gamma \sigma^2 \eta} \tanh\left(\frac{\sqrt{\gamma \sigma^2 \eta}(T-t)}{\eta}\right) \right)$$
+
+$$v^*(q,t) = \frac{q}{\eta} \sqrt{\gamma \sigma^2 \eta} \tanh\left(\frac{\sqrt{\gamma \sigma^2 \eta}(T-t)}{\eta}\right)$$
+
+We simplify $\frac{1}{\eta} \rightarrow \sqrt{\frac{1}{\eta^2}}$
+
+$$v^*(q,t) = q \sqrt{\frac{1}{\eta^2}} \sqrt{\gamma \sigma^2 \eta} \tanh\left( \sqrt{\frac{1}{\eta^2}} \frac{\sqrt{\gamma \sigma^2 \eta}(T-t)}{1} \right)$$
+
+$$v^*(q,t) = q \sqrt{\frac{\gamma \sigma^2 \eta} {\eta^2}} \tanh\left( \sqrt{\frac{\gamma \sigma^2 \eta}{\eta^2}} (T-t)
+\right)$$
+
+\begin{equation}\label{eq:optimal_control_analytical}\tag{5}
+v^*(q,t) = q \sqrt{\frac{\gamma \sigma^2}{\eta}} \tanh\left(
+\sigma \sqrt{ \frac{\gamma}{\eta}} (T-t)\right)
+\end{equation}
+
+The optimal trading rate is proportional to the current inventory $q$, and depends on the time remaining until horizon $T$. As time runs out, the $\tanh$ term approaches 0, meaning the optimal trading rate slows down, which is intuitive.
+
+We simulate using the the closed form solutions in \ref{eq:value_function_analytical} and \ref{eq:optimal_control_analytical} by discretizing the inventory and the time to their bounded limits. We initialize the value function at the terminal state to zero. After that, we iterate backward in time in calculating the state value at each time step.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/value_function_analytical.pdf}
+    \vspace{-25pt}
+    \caption{\small Value Function}
+    \label{fig:value_function_analytical}
+\end{figure}
+
+The $q^2$ term in \eqref{eq:value_function_analytical} makes the graph convex. The graph will generally show that the $V(q,t)$ is higher for larger absolute inventory levels ($|q|$). This is because holding more inventory (or having a larger net short position) incurs a higher cost/risk, as captured by the $\gamma \sigma^2 q^2$ term in the original cost function.
+
+Looking towards the left side of the plot (where $t$ is close to 
+$0$), the value function will be at its highest for any given $q$. This indicates that the initial state has the highest expected future cost, and the entire purpose of the optimal control strategy is to reduce this cost to zero by time 
+$T$.
+
+
+The slope of $\frac{\partial V}{\partial t}$ indicates how the trading rate changes with inventory. The slope of the trading rate and value function towards the terminal time $T$ is negative, since the tanh decreases as time increases and $v^*(q,t)$ becomes smaller. The slope is positive as the inventory increases, corresponding to a higher trading rate when larger inventories are executed.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/control_function_analytical.pdf}
+    \vspace{-25pt}
+    \caption{\small Optimal Control Policy}
+    \label{fig:control_function_analytical}
+\end{figure}
+
+The graph will generally show that the trading rate is higher for larger absolute inventory levels ($|q|$). This means the trader should trade more aggressively when there are more inventory to liquidate.

@@ -1,0 +1,185 @@
+\section*{Numerical Approximation}
+The objective of the liquidation problem is to find the optimal trading rate that minimizes the expected cost over a time horizon.
+
+$$dx_s = v_sdx_s$$
+
+where
+\begin{itemize}
+\item $x_s$: State variable representing the inventory level
+\item $v_s$: Control function of the trading rate or size of the inventory to trade per time step.
+\item $dx_s$: Change in inventory over time controlled by $v_s$.
+\end{itemize}
+\\\\
+The instantaneous cost for a given control $v_s$ and state $x_s$ is
+
+$$\mathcal{L}(x_s,v_s) = \eta v_s^2 + \gamma \sigma^2x_s^2 $$
+where:
+\begin{itemize}
+\item $\mathcal{L}(x_s,v_s)$: Instantaneous cost
+\item $\eta v^2$: Cost related to the intensity of trade
+\item $\gamma \sigma^2 x^2$: Cost of inventory risk
+\end{itemize}
+
+The objective is to minimize the expected total cost from time $t$ to $T$, starting from state $x$ at time $t$.
+
+$$ V(x,t) = \min_{v_s, s \in[t,T]} \mathbb{E}\left[\int_t^T (\eta v^2 + \gamma^2x^2)ds \right]$$
+
+The expectation is taken over any potential random disturbances in the system. The state dynamics $dV = vdt$ is deterministic, and the expectation is often implicit.
+
+Instead of solving the entire integral from time $t$ to time $T$, we consider taking a small step $\Delta t$. Following Bellman's equation, the optimization problem is broken down into smaller problems. As such, the total cost of $V(t,x)$ is expressed as the cost incurred during the shorter interval $[t, t+\Delta t]$ plus the minimum cost from $[t+\Delta t]$ onward starting from the new state $V_{t+\Delta t}$.
+
+\begin{equation*}
+\begin{split}
+V(x, t) = \min_{v_s, s \in [t, T]} \mathbb{E} \bigg[& \int_t^{t+\Delta t} (\eta v_s^2 + \gamma \sigma^2 x_s^2) ds \\
+&+ \int_{t+\Delta t}^T (\eta v_s^2 + \gamma \sigma^2 x_s^2) ds\bigg]
+\end{split}
+\end{equation*}
+
+We approximate the first integral over the small interval $[t,t+\Delta t]$ by its value at time $t$
+
+$$\int_t^{t+\Delta t} (\eta v_s^2 + \gamma \sigma^2 x_s^2) ds \approx (\eta v_t^2 + \gamma \sigma^2 x_t^2) \Delta t$$
+
+And the state evolves deterministically:
+$$x_{t+\Delta t} \approx x_t + v_t \Delta t$$
+
+The second integral term is simply the optimal cost starting from time 
+$t+\Delta t$ with state $x_{t+\Delta t}$, which is $V(t+\Delta t, x_{t+\Delta t})$.
+
+The Bellman equation {\cite{wiki:bellman-equation} in discrete-step form is
+\begin{equation}\label{eq:bellman}
+V(t,x) =  \min_{v_t}\bigg[\big(\eta v_t^2 + \gammat \sigma^2 x_t^2\big)\Delta t + V\big(t+\Delta t, x_t + v_t\Delta t\big)\bigg]
+\end{equation}
+
+Now, we expand $V(t+\Delta t, x_t + v_t \Delta t)$ using Taylor series expansion around $(t, x_t)$
+
+\begin{equation}\label{taylorseries}
+\begin{split}
+V(t+\Delta t, x_t + v_t \Delta t) \approx& V(t, x) + \frac{\partial V}{\partial t}(t, x) \Delta t + \frac{\partial V}{\partial x}(t, x) (v_t \Delta t)\\
+&+ \frac{1}{2} \frac{\partial^2 V}{\partial t^2}(t, x) (\Delta t)^2 + \dots
+\end{split}
+\end{equation}
+
+For small $\Delta t$, we can ignore terms of order $(\Delta t)^2$ and higher.
+
+$$V(t+\Delta t, x_t + v_t \Delta t) \approx V(t, x) + \frac{\partial V}{\partial t} \Delta t + \frac{\partial V}{\partial x} v_t \Delta t$$
+
+Substitute this into the Bellman equation in \ref{eq:bellman}
+
+$$V(t, x) \approx \min_{v_t} \left\{ (\eta v_t^2 + \gamma \sigma^2 x_t^2) \Delta t + V(t, x) + \frac{\partial V}{\partial t} \Delta t + \frac{\partial V}{\partial x} v_t \Delta t \right\}$$
+
+Rearranged to isolate terms involving $V(t, x)$:
+
+$$V(t, x) - V(t, x) \approx \min_{v_t} \left\{ \frac{\partial V}{\partial t} \Delta t + (\eta v_t^2 + \gamma \sigma^2 x_t^2) \Delta t + \frac{\partial V}{\partial x} v_t \Delta t \right\}$$
+
+$$0 \approx \min_{v_t} \left\{ \frac{\partial V}{\partial t} \Delta t + \eta v_t^2 \Delta t + \gamma \sigma^2 x_t^2 \Delta t + \frac{\partial V}{\partial x} v_t \Delta t \right\}$$
+
+Divide by $\Delta t$ (assuming $\Delta t > 0$):
+
+$$0 \approx \min_{v_t} \left\{ \frac{\partial V}{\partial t} + \eta v_t^2 + \gamma \sigma^2 x_t^2 + \frac{\partial V}{\partial x} v_t \right\}$$
+
+This is the continuous-time Hamilton-Jacobi-Bellman (HJB) \cite{wiki:hamilton-jacobi-bellman} equation we will use for the dynamic programming.
+
+We can rewrite it by moving $\frac{\partial V}{\partial t}$ to the other side:
+
+\begin{equation}\label{eq:hjb_problem}
+-\frac{\partial V}{\partial t} = \min_{v_t} \left\{ \eta v_t^2 + \gamma \sigma^2 x_t^2 + \frac{\partial V}{\partial x} v_t \right\}
+\end{equation}
+
+To find the solution to the HJB problem, we first solve the optimal control function that will minimize the Hamiltonian.
+
+We replace the state variable $x$ with $q$ as the inventory size:
+
+\begin{equation*}
+-\frac{\partial V}{\partial t}(q,t) = \min_{v} \left\{ \eta v_t^2 + \gamma \sigma^2 q^2 + v_t \frac{\partial V}{\partial q}(q,t) \right\}
+\end{equation*}
+
+This equation describes the value function $V(q, t)$ for an optimal control problem, where $q$ represents the inventory or position, and  $v$ is the control variable representing the trading rate. The goal is to minimize a cost function that includes inventory risk and trading risk. We first find the optimal trading rate, control function $v^*$, by minimizing the Hamiltonian expression inside the brackets with respect to $v$. 
+
+We do this by taking the partial derivative with respect to $v$ and setting it to zero:
+
+$$\mathcal{L}(v) = \eta v^2 + \gamma \sigma^2 q^2 - v \frac{\partial V}{\partial q}$$
+
+$$\frac{\partial \mathcal{L}}{\partial v} = 2 \eta v - \frac{\partial V}{\partial q}$$
+
+Setting the derivative to zero to find the minimum
+
+$$2 \eta v - \frac{\partial V}{\partial q} = 0$$
+
+Solving for $v$:
+\begin{equation}\label{eq:optimal_control_function}
+v^* = \frac{1}{2 \eta} \frac{\partial V}{\partial q}
+\end{equation}
+
+Substitute the optimal control $v^*$ back into the original HJB equation \ref{eq:hjb_problem}. First, we need the term $\eta(v^*)^2$ and $v^*\frac{\partial V}{\partial q}$
+
+\begin{align*}
+\eta(v^*)^2 &= \eta\left( \frac{1}{2\eta} \frac{\partial V}{\partial q} \right)
+= \eta \left( \frac{1}{4\eta^2} \left(\frac{\partial V}{\partial q}\right)^2 \right)
+= \frac{1}{4\eta} \left(\frac{\partial V}{\partial q}\right)^2
+\end{align*}
+
+\begin{align*}
+v^*\frac{\partial V}{\partial q} = \frac{1}{2\eta}\left(\frac{\partial V}{\partial q}\right)\frac{\partial V}{\partial q}
+= \frac{1}{2\eta} \left(\frac{\partial V}{\partial q}\right)^2
+\end{align*}
+
+Substituting these into the HJB equation in \ref{eq:hjb_problem}
+
+$$-\frac{\partial V}{\partial t} = \left[ \frac{1}{4 \eta} \left(\frac{\partial V}{\partial q}\right)^2 + \gamma \sigma^2 q^2 - \frac{1}{2 \eta} \left(\frac{\partial V}{\partial q}\right)^2 \right]$$
+
+$$-\frac{\partial V}{\partial t} = \gamma \sigma^2 q^2 - \frac{1}{4 \eta} \left(\frac{\partial V}{\partial q}\right)^2$$
+
+We are interested in how the state variable, inventory, changes over time, represented by the PDE $\frac{\partial V}{\partial t}$. By rearranging the terms, we obtain the final form of the solution to the HJB equation in\ref{eq:hjb_problem}
+
+\begin{equation}\label{eq:derived_hjb}
+\frac{\partial V}{\partial t} = \frac{1}{4 \eta} \left(\frac{\partial V}{\partial q}\right)^2 - \gamma \sigma^2 q^2
+\end{equation}
+\\\\
+where:
+\begin{itemize}
+\item $V(q, t)$: Value function.
+\item $q$: Inventory as the state variable
+\item $\eta > 0$: Risk aversion coefficient for trading
+\item $\gamma > 0$: Risk aversion coefficient for inventory
+\item $\sigma^2 > 0$: Variance of the price process
+\end{itemize}
+\\\\
+This is a first order nonlinear partial differential equation for the value function $V(q, t)$. Solving this PDE requires specifying boundary or terminal conditions, such as the value of $V$ at a certain time $t=T$ or for a certain inventory level $q$.
+
+\subsection*{Simulation}
+We simulate to find the optimal control by discretizing the inventory and the time bounded limits. We initialize the value function in the terminal state to 0 for all the value paths of the range of the inventory levels. We then iterate backward in time, calculating the state value at each time step.
+
+We use partial derivatives to approximate the finite difference when stepping through the states of the value function. After determining the value of the state function at each time step for the different inventory levels, we calculate and reconstruct the optimal control function to obtain the liquidation size for the next trade.
+
+The value function is the minimum possible cost to go from state $q$ at time $t$ to the terminal time $T$. The goal is to find $V(q, t)$ for all initial states of $q$ at $t=0$, and the control policy function that achieves this minimum cost.
+
+We illustrate in Figure \eqref{fig:optimal_control_numerical} the behavior of the optimal liquidation strategy using the cost function in the HJB problem in \ref{eq:hjb_problem} that is optimized by the control function in \ref{eq:optimal_control_function}.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/value_function_numerical.pdf}
+    \vspace{-25pt}
+    \caption{\small Value Function}
+    \label{fig:value_function_numerical}
+\end{figure}
+
+ The graph shows how the state value and inventory $q$ change over time based on the optimal trading rate. In a real trading scenario, there are other random price variables that affect the value of the inventory, but for this case the HJB equation in its continuous form optimizes for the expected cost.
+
+The optimal trading rate guides the inventory path towards zero as time approaches the terminal state. A common approach is to assume that the inventory changes discretely on the basis of the liquidation rate.
+
+The slope of $\frac{\partial V}{\partial q}$ indicates how the cost changes as the inventory level increases. The slope is expected to positive for $q > 0$, negative for $q < 0$, and zero at $q=0$. This means $V(q,t)$ is convex due to the term $q^2$. The slope with respect to time as it approaches $T$ is negative as the cost is expected to be approaching zero.
+
+The value function represents the expected minimum cost, the equation in \eqref{eq:hjb_problem} indicates that this value is positive.
+
+We refer to the optimal control function in \eqref{eq:optimal_control_function} to track the behavior of the optimal trading rate with respect to the inventory as shown in Figure \eqref{fig:optimal_control_numerical}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/control_function_numerical.pdf}
+    \vspace{-25pt}
+    \caption{\small Optimal Control Policy}
+    \label{fig:optimal_control_numerical}
+\end{figure}
+
+This plot shows slices of the numerically computed optimal trading rate at different time points. We can observe how the rate decreases as time approaches $T$ (the trading becomes less aggressive when there’s less time left, or when the inventory is closer to zero).
+
