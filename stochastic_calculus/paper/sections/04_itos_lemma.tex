@@ -1,15 +1,17 @@
 \section{Ito's Lemma}
-Consider a stochastic process $f(X_t, t)$, we derive Ito's lemma \cite{wiki:itos-lemma} using the properties of the Ito integral and Taylor series expansion. The $X_t$ process is defined by the following SDE:
+Given a known stochastic process $X_t$ and a smooth function $f(t, X_t)$, Ito's lemma calculates the total differential $df(t, X_t)$. The result is a new SDE that retains the random part $W_t$ and describes how the value of $f(t, X_t)$ changes over time.
+\\\
+Consider a stochastic process $f(X_t, t)$, we derive Ito's lemma using the properties of the Ito integral and Taylor series expansion. The $X_t$ process is defined by the following SDE:
 \begin{align} \label{eq:stoch_diff_eq}
 dX_t = \mu(X_t,t)dt + \sigma(X_t,t)dW_t
 \end{align}
-We treat the drift and diffusion coefficients as constants $\mu$ and $\sigma$ respectively. We are interested in the behavior of a certain function $Y_t=f(X_t, t)$. In practical application, we would want to know how returns $(Y_t)$ of a trading strategy will evolve given a price function $(X_t)$ as a stochastic process parameter.
+We treat the drift and diffusion coefficients as constants $\mu$ and $\sigma$, respectively. We are interested in the behavior of a certain function $Y_t=f(X_t, t)$. In practical application, we would want to know how returns $(Y_t)$ of a trading strategy will evolve given a price function $(X_t)$ as a stochastic process parameter.
 
 Moreover, we define $\Delta Y$ over a small time interval from t to $(t+\Delta t)$
 \begin{align*}
 \Delta Y = Y_{t+\Delta t} - Y_t = f(X_{t+\Delta t}, t+\Delta t) - f(X_t, t)
 \end{align*}
-We use the Taylor series expansion of $f(\cdots)$ around the point $(X_t, t)$.  For a function of two variables, the Taylor expansion to the second order and ignoring the higher order derivatives
+We use the Taylor series expansion of $f(\cdots)$ around the point $(X_t, t)$.  For a function of two variables, the Taylor expansion to the second order, ignoring the higher-order derivatives
 \begin{align*}
 f(X_{t+\Delta t}, t+\Delta t) \approx f(X_t,t) + \frac{\partial f}{\partial x}(X_t, t) \Delta X + \\\frac{\partial f}{\partial t} (X_t,t) \Delta t + \frac{\partial^2f}{\partial x^2}(X_t,t)(\Delta X)^2 + \cdots
 \end{align*}
@@ -82,7 +84,7 @@ The $X_t$ process is defined by the following SDE:
 \begin{align*}
 dX_t = \mu(X_t,t)dt + \sigma(X_t,t)dW_t
 \end{align*}
-where $\mu &= 0.05x$ and $\sigma &= 0.2x$.
+where $\mu= 0.05x$ and $\sigma= 0.2x$.
 
 We treat the drift and diffusion coefficients as constants $\mu$ and $\sigma$ respectively. We are interested in the behavior of a certain function $Y_t=f(X_t, t)$. 
 
