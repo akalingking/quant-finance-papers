@@ -1,5 +1,5 @@
 \section{Discrete Time}
-From the simple trading strategy, let $S_t$ be the price of the asset that can be bought or sold at any time $t$ for $t=0,1,\cdots$ where $t=0$ and the initial $S_0$ are known, but future fluctuations $Y_k$ are unknown. We model the price change from time $t$ to $n$ as a random variable $Y_k$, then the price process $S_n$ is a random walk
+From the simple trading strategy\cite{online:stochastic-calculus}, let $S_t$ be the price of the asset that can be bought or sold at any time $t$ for $t=0,1,\cdots$ where $t=0$ and the initial $S_0$ are known, but future fluctuations $Y_k$ are unknown. We model the price change from time $t$ to $n$ as a random variable $Y_k$, then the price process $S_n$ is a random walk
 \begin{align*}
 S_{n} = \sum_{t=0}^{n-1} Y_k
 \end{align*}
@@ -23,9 +23,23 @@ A particularly important case is when the price process $S_t$ is a simple random
 \mathbb{E[}Y_k] = 0, \quad Var(Y_k) = \sigma^2, \quad \text{where all $Y_k$ are i.i.d.}
 \end{align}
 
-Unlike random walks that can fluctuate to infinity, a Doob martingale \cite{wiki:doob-martingale} always converges as $t\rightarrow \infty$ provided that the original $Y$ is integrable. Every Doob martingale is uniformly integrable and will not have extreme explosive behavior.
+\begin{definition}[Martingale]. A martingale is a sequence of random variables where the expected value given all past information is exactly equal to the most recent value.  A sequence $\{X_n\}$ is a martingale if it satisfies the following conditions:
+\begin{itemize}
+\item The absolute expected value is finite $\mathbb{E}\big[|X_n|\big] < \infty$.
+\item The value of $X_t$ is determined solely by the information available up to time $t$.
+\item The conditional expectation of the next value $X_{t+1}$, given all previous values, is the current value $X_t$.
+\end{itemize}
+\end{definition}
 
-Any non-anticipating strategy applied to a martingale \cite{wiki:martingale} produces another martingale. One cannot manufacture a positive expected value by strategizing from a non-zero expected return process. We call the sequence $\{S_0, S_1, \cdots, S_k, \cdots, S_n\}$ a discrete path. The time variable $k$ is discrete, but the value of $S_k$ could be continuous or discrete. The process is a martingale if the conditional expectation of the future value is equal to the present value.
+\begin{definition}[Doob Martingale]
+A Doob martingale is a stochastic process that provides the best estimate of a random variable as more information becomes available over time. It is a sequence of evolving approximations. Formally, given a complex random variable $Y$ and a sequence of information snapshots, a filtration $\mathit{F}_t$, the Doob martingale $X_t$ is defined as the conditional expectation of $Y$ given all information up to time $t$.
+\end{definition}
+\begin{align*}
+X_t=\mathbb{E}[X_{t+1} | \mathit{F}_t] = \mathbb{E}[Y|\mathit{F}_t]
+\end{align*}
+Unlike random walks that can fluctuate to infinity, a Doob martingale always converges as $t\rightarrow \infty$ provided that the original $Y$ is integrable. Every Doob martingale is uniformly integrable and will not have extreme explosive behavior.
+
+Any non-anticipating strategy applied to a martingale produces another martingale. One cannot manufacture a positive expected value by strategizing from a non-zero expected return process. We call the sequence $\{S_0, S_1, \cdots, S_k, \cdots, S_n\}$ a discrete path. The time variable $k$ is discrete, but the value of $S_k$ could be continuous or discrete. The process is a martingale if the conditional expectation of the future value is equal to the present value.
 \begin{align*}
 \mathbb{E}\big[S_{n+1} \big| (S_0,\cdots,S_n)=(s_0, \cdots, s_n)\big] = s_n
 \end{align*}
